@@ -1,0 +1,63 @@
+# Ignorer les fichiers et dossiers générés par les compilations
+# Node.js
+frontend/node_modules/**
+backend/node_modules/**
+*.log
+*.swp
+*.swo
+.DS_Store
+
+# Frontend (React, Vue, etc.)
+frontend/dist/
+frontend/build/
+frontend/out/
+
+# Backend (si applicable)
+/backend/dist/
+/backend/build/
+
+# Fichiers de cache
+.cache/
+
+# Fichiers temporaires
+*.tmp
+*.tmp_proj
+
+# Fichiers de configuration locaux
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Fichiers de test
+coverage/
+
+# Fichiers HTML générés
+**/*.html
+
+# Fichiers de spécifications
+Spec/**/*.html
+
+# Fichiers de design
+**/DESIGN.md
+
+# Fichiers de logs
+logs/
+
+# Fichiers de cache Docker
+.docker/
+
+# Fichiers de cache npm
+npm-debug.log*
+
+# Fichiers de cache Yarn
+.yarn-cache/
+
+# Fichiers de cache Webpack
+webpack-stats.json
+
+# Fichiers de cache Tailwind
+.tailwindcss/
+
+# Fichiers de cache de VS Code
+.vscode/
