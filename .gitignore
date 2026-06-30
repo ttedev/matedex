@@ -15,7 +15,7 @@ frontend/out/
 # Backend (si applicable)
 /backend/dist/
 /backend/build/
-
+/backend//uploads/
 # Fichiers de cache
 .cache/
 

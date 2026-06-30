@@ -1,0 +1,147 @@
+// backend/prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// UTILISATEUR
+// ============================================================
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String?   // Null si connexion OAuth uniquement
+  displayName  String
+  avatarUrl    String?
+  title        String    @default("Explorateur Estival")
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  // Relations OAuth
+  oauthAccounts OAuthAccount[]
+
+  // Contenu
+  plans   Plan[]
+  tags    Tag[]     // Tags personnalisés créés par l'utilisateur
+
+  @@map("users")
+}
+
+// ============================================================
+// COMPTES OAUTH LIÉS À UN UTILISATEUR
+// ============================================================
+
+model OAuthAccount {
+  id           String   @id @default(cuid())
+  userId       String
+  provider     Provider
+  providerId   String   // ID unique retourné par le provider OAuth
+  accessToken  String?
+  refreshToken String?
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerId])
+  @@map("oauth_accounts")
+}
+
+enum Provider {
+  google
+  facebook
+  apple
+}
+
+// ============================================================
+// PLAN (rencontre)
+// ============================================================
+
+model Plan {
+  id          String    @id @default(cuid())
+  userId      String
+  partnerName String                       // Nom ou alias du partenaire
+  partnerAge  Int?                         // Âge (slider 18-99)
+  bananaSize  BananaSize?                  // Taille (sélecteur visuel banane)
+  latitude    Float?                       // Coordonnée GPS
+  longitude   Float?                       // Coordonnée GPS
+  locationName String?                     // Adresse lisible (ex: "Paris, France")
+  description String?                      // Texte libre "détails croustillants"
+  score       Int?                         // Note /20 (0-20)
+  planDate    DateTime  @default(now())    // Date de la rencontre
+  category    Category  @default(autre)    // Catégorie de l'événement
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tags   PlanTag[]
+  photos Photo[]
+
+  @@map("plans")
+}
+
+enum BananaSize {
+  S
+  M
+  L
+  XL
+}
+
+enum Category {
+  plage
+  soiree
+  festival
+  autre
+}
+
+// ============================================================
+// TAGS
+// ============================================================
+
+model Tag {
+  id        String    @id @default(cuid())
+  name      String
+  userId    String    // Tag appartenant à un utilisateur (ou null si système)
+  isSystem  Boolean   @default(false)  // Tags prédéfinis (bbk, uro, embrasser, public)
+  createdAt DateTime  @default(now())
+
+  user  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plans PlanTag[]
+
+  @@unique([name, userId])
+  @@map("tags")
+}
+
+model PlanTag {
+  planId String
+  tagId  String
+
+  plan Plan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([planId, tagId])
+  @@map("plan_tags")
+}
+
+// ============================================================
+// PHOTOS
+// ============================================================
+
+model Photo {
+  id        String    @id @default(cuid())
+  planId    String
+  filePath  String    // Chemin relatif depuis UPLOADS_DIR
+  isNsfw    Boolean   @default(false)   // true = photo privée / NSFW
+  mimeType  String                      // image/jpeg, image/png, etc.
+  sizeBytes Int
+  createdAt DateTime  @default(now())
+
+  plan Plan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@map("photos")
+}

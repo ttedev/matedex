@@ -1,0 +1,30 @@
+# Ignorer les fichiers et dossiers inutiles pour Docker
+
+# Node_modules
+node_modules/
+
+# Fichiers de cache
+.cache/
+
+# Fichiers de configuration locaux
+.env.local
+
+# Fichiers de build
+build/
+
+# Fichiers de log
+logs/
+
+# Fichiers temporaires
+*.log
+*.tmp
+
+# Fichiers de test
+coverage/
+
+# Fichiers IDE
+.vscode/
+.idea/
+
+# Fichiers système
+.DS_Store
