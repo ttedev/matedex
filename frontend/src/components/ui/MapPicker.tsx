@@ -130,7 +130,7 @@ export default function MapPicker({ lat, lng, onLocationChange }: MapPickerProps
 
   return (
     <div className="flex flex-col gap-3">
-      <div ref={containerRef} className="relative">
+      <div ref={containerRef} className="relative z-[1000]">
         <div className="flex gap-2">
           <input
             value={search}
